@@ -1,0 +1,28 @@
+{
+	"name": "libheic",
+	"version": "0.0.0",
+	"main": "libheic.node",
+	"types": "libheic.node.d.ts",
+	"scripts": {
+		"build": "./build.sh"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/magic-akari/libheic.git"
+	},
+	"bin": {
+		"heic": "./heic.js"
+	},
+	"keywords": [
+		"heif",
+		"heic",
+		"image"
+	],
+	"author": "magic-akari <akari.ccino@gamil.com>",
+	"license": "MIT",
+	"description": "HEIC image decoder/encoder",
+	"devDependencies": {
+		"node-addon-api": "^8.1.0",
+		"node-api-headers": "^1.2.0"
+	}
+}
