@@ -10,8 +10,18 @@ Napi::Value encode(const Napi::CallbackInfo& info) {
         return env.Null();
     }
 
-    if (!info[0].IsArrayBuffer()) {
-        Napi::TypeError::New(env, "arguments[0] must be an ArrayBuffer").ThrowAsJavaScriptException();
+    Napi::ArrayBuffer buffer;
+    if (info[0].IsArrayBuffer()) {
+        buffer = info[0].As<Napi::ArrayBuffer>();
+    } else if (info[0].IsTypedArray()) {
+        Napi::TypedArray typed_array = info[0].As<Napi::TypedArray>();
+        buffer = typed_array.ArrayBuffer();
+    } else if (info[0].IsDataView()) {
+        Napi::DataView data_view = info[0].As<Napi::DataView>();
+        buffer = data_view.ArrayBuffer();
+    } else {
+        Napi::TypeError::New(env, "arguments[0] must be an instance of ArrayBuffer, TypedArray or DataView")
+            .ThrowAsJavaScriptException();
         return env.Null();
     }
 
@@ -23,8 +33,6 @@ Napi::Value encode(const Napi::CallbackInfo& info) {
         }
         quality = info[1].As<Napi::Number>().DoubleValue();
     }
-
-    auto buffer = info[0].As<Napi::ArrayBuffer>();
 
     size_t length = buffer.ByteLength();
     void* bytes = buffer.Data();

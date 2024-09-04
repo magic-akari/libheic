@@ -18,7 +18,7 @@ npm install libheic
 const heic = require("libheic");
 
 const input = fs.readFileSync("image.png");
-const output = heic.decode(input.buffer);
+const output = heic.decode(input);
 fs.writeFileSync("image.heic", Buffer.from(output));
 ```
 

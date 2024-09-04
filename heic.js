@@ -33,7 +33,7 @@ for (const input_path of positionals) {
     try {
         const quality = values.quality ? parseFloat(values.quality) : undefined;
 
-        const data = heic.encode(input.buffer, quality);
+        const data = heic.encode(input, quality);
         fs.writeFileSync(output_path, Buffer.from(data));
         console.log(output_path);
     } catch (error) {
