@@ -35,7 +35,7 @@ Napi::Value encode(const Napi::CallbackInfo& info) {
         NSData* input_image = [NSData dataWithBytes:bytes length:length];
         NSError* error = nil;
 
-        NSData* output_image = convertImageToHEIC(input_image, (CGFloat)quality, &error);
+        NSData* output_image = [HEIC encodeImage:input_image withQuality:(CGFloat)quality error:&error];
         if (error) {
             Napi::Error::New(env, error.localizedDescription.UTF8String).ThrowAsJavaScriptException();
             return env.Null();

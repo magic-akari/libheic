@@ -1,7 +1,4 @@
 #import "libheic.h"
-#import <AVFoundation/AVFoundation.h>
-#import <Foundation/Foundation.h>
-#import <ImageIO/ImageIO.h>
 
 typedef NS_ENUM(NSInteger, ImageConversionError) {
     ImageConversionErrorLoadingImageFailed,
@@ -9,7 +6,9 @@ typedef NS_ENUM(NSInteger, ImageConversionError) {
     ImageConversionErrorFinalizingDestinationFailed
 };
 
-NSError* errorWithCode(ImageConversionError code) {
+@implementation HEIC
+
++ (NSError*)errorWithCode:(ImageConversionError)code {
     NSString* domain = @"github.com/magic-akari/libheic";
     NSString* description;
 
@@ -28,12 +27,12 @@ NSError* errorWithCode(ImageConversionError code) {
     return [NSError errorWithDomain:domain code:code userInfo:@{NSLocalizedDescriptionKey : description}];
 }
 
-NSData* convertImageToHEIC(NSData* imageData, CGFloat quality, NSError** error) {
++ (NSData*)encodeImage:(NSData*)image withQuality:(CGFloat)quality error:(NSError**)error {
     // Create a CGImageSource from NSData
-    CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)imageData, NULL);
+    CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)image, NULL);
     if (!imageSource) {
         if (error) {
-            *error = errorWithCode(ImageConversionErrorLoadingImageFailed);
+            *error = [HEIC errorWithCode:ImageConversionErrorLoadingImageFailed];
         }
         return nil;
     }
@@ -51,7 +50,7 @@ NSData* convertImageToHEIC(NSData* imageData, CGFloat quality, NSError** error) 
         CFRelease(imageProperties);
         CFRelease(imageSource);
         if (error) {
-            *error = errorWithCode(ImageConversionErrorCreatingDestinationFailed);
+            *error = [HEIC errorWithCode:ImageConversionErrorCreatingDestinationFailed];
         }
         return nil;
     }
@@ -61,10 +60,9 @@ NSData* convertImageToHEIC(NSData* imageData, CGFloat quality, NSError** error) 
 
     // Add images to the destination
     for (size_t index = 0; index < imageCount; index++) {
-        CGImageDestinationAddImageFromSource(
-            imageDestination, imageSource, index,
-            (__bridge CFDictionaryRef)
-                @{(NSString*)kCGImageDestinationLossyCompressionQuality : @(quality)});
+        CGImageDestinationAddImageFromSource(imageDestination, imageSource, index,
+                                             (__bridge CFDictionaryRef)
+                                                 @{(NSString*)kCGImageDestinationLossyCompressionQuality : @(quality)});
     }
 
     // Finalize the destination
@@ -73,7 +71,7 @@ NSData* convertImageToHEIC(NSData* imageData, CGFloat quality, NSError** error) 
         CFRelease(imageProperties);
         CFRelease(imageSource);
         if (error) {
-            *error = errorWithCode(ImageConversionErrorFinalizingDestinationFailed);
+            *error = [HEIC errorWithCode:ImageConversionErrorFinalizingDestinationFailed];
         }
         return nil;
     }
@@ -85,3 +83,5 @@ NSData* convertImageToHEIC(NSData* imageData, CGFloat quality, NSError** error) 
 
     return heicData;
 }
+
+@end

@@ -1,8 +1,7 @@
-#ifndef LIBHEIC_H
-#define LIBHEIC_H
-
+#import <AVFoundation/AVFoundation.h>
 #import <Foundation/Foundation.h>
+#import <ImageIO/ImageIO.h>
 
-NSData* convertImageToHEIC(NSData* imageData, CGFloat quality, NSError** error);
-
-#endif  // LIBHEIC_H
+@interface HEIC : NSObject
++ (NSData*)encodeImage:(NSData*)image withQuality:(CGFloat)quality error:(NSError**)error;
+@end
