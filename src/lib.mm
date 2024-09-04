@@ -34,13 +34,10 @@ Napi::Value encode(const Napi::CallbackInfo& info) {
         quality = info[1].As<Napi::Number>().DoubleValue();
     }
 
-    size_t length = buffer.ByteLength();
-    void* bytes = buffer.Data();
-
     Napi::Value result;
 
     @autoreleasepool {
-        NSData* input_image = [NSData dataWithBytes:bytes length:length];
+        NSData* input_image = [NSData dataWithBytes:buffer.Data() length:buffer.ByteLength()];
         NSError* error = nil;
 
         NSData* output_image = [HEIC encodeImage:input_image withQuality:(CGFloat)quality error:&error];
