@@ -4,7 +4,7 @@ NAPI bindings for a HEIC image format decoder and encoder, integrating with Imag
 
 > [!NOTE]
 > The library is still in development and not ready for production.
-> The API may change. Currently, only the encoder is available.
+> The API may change.
 
 ## Installation
 

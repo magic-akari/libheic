@@ -27,7 +27,7 @@ typedef NS_ENUM(NSInteger, ImageConversionError) {
     return [NSError errorWithDomain:domain code:code userInfo:@{NSLocalizedDescriptionKey : description}];
 }
 
-+ (NSData*)encodeImage:(NSData*)image withQuality:(CGFloat)quality error:(NSError**)error {
++ (NSData*)encode:(NSData*)image to:(NSString*)format withQuality:(CGFloat)quality error:(NSError**)error {
     // Create a CGImageSource from NSData
     CGImageSourceRef imageSource = CGImageSourceCreateWithData((__bridge CFDataRef)image, NULL);
     if (!imageSource) {
@@ -44,8 +44,8 @@ typedef NS_ENUM(NSInteger, ImageConversionError) {
     NSMutableData* heicData = [NSMutableData data];
 
     // Create a CGImageDestination to write to the mutable data
-    CGImageDestinationRef imageDestination = CGImageDestinationCreateWithData(
-        (__bridge CFMutableDataRef)heicData, (CFStringRef)AVFileTypeHEIC, imageCount, NULL);
+    CGImageDestinationRef imageDestination =
+        CGImageDestinationCreateWithData((__bridge CFMutableDataRef)heicData, (CFStringRef)format, imageCount, NULL);
     if (!imageDestination) {
         CFRelease(imageProperties);
         CFRelease(imageSource);
@@ -82,6 +82,14 @@ typedef NS_ENUM(NSInteger, ImageConversionError) {
     CFRelease(imageSource);
 
     return heicData;
+}
+
++ (NSData*)encodeImage:(NSData*)image withQuality:(CGFloat)quality error:(NSError**)error {
+    return [HEIC encode:image to:@"public.heic" withQuality:quality error:error];
+}
+
++ (NSData*)decodeImage:(NSData*)image error:(NSError**)error {
+    return [HEIC encode:image to:@"public.png" withQuality:1.0 error:error];
 }
 
 @end

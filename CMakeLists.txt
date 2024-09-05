@@ -39,6 +39,5 @@ target_link_options(${PROJECT_NAME} PUBLIC -undefined dynamic_lookup)
 target_link_libraries(
   ${PROJECT_NAME}
   "-framework Foundation"
-  "-framework AVFoundation"
   "-framework ImageIO"
 )
